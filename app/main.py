@@ -72,3 +72,8 @@ async def startup_event():
     for route in app.routes:
         print(f"{route.path} - {route.methods}")
 
+from fastapi import Request
+
+@app.get("/debug-headers")
+async def debug_headers(request: Request):
+    return dict(request.headers)
