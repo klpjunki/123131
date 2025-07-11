@@ -331,3 +331,22 @@ async def create_promocode(
         "uses_left": promocode.uses_left,
         "expiry": promocode.expiry
     }
+
+@router.get("/exchange-rates")
+async def get_exchange_rates(
+    db: AsyncSession = Depends(get_db),
+    admin_secret: str = Depends(get_admin_secret)
+):
+    result = await db.execute(
+        select(ExchangeRate)
+        .order_by(ExchangeRate.to_currency)
+    )
+    rates = result.scalars().all()
+    return [
+        {
+            "to_currency": rate.to_currency,
+            "rate": rate.rate,
+            "last_updated": rate.last_updated
+        }
+        for rate in rates
+    ]
