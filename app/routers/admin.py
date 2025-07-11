@@ -205,7 +205,7 @@ async def set_role(
     await db.refresh(user)
     return {"status": "success", "telegram_id": user.telegram_id, "new_role": user.role}
 
-@router.post("/admin/set-exchange-rate")
+@router.post("/set-exchange-rate")
 async def set_exchange_rate(
     rate_data: SetExchangeRateRequest,
     db: AsyncSession = Depends(get_db),
