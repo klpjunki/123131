@@ -754,3 +754,17 @@ async def exchange_currency(
         "message": "Заявка создана. Ожидает подтверждения администратора.",
         "frozen_coins": user.locked_coins
     }
+
+
+@router.get("/exchange-rate")
+async def get_exchange_rate(to_currency: str, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(ExchangeRate.rate)
+        .where(ExchangeRate.to_currency == to_currency)
+        .order_by(ExchangeRate.last_updated.desc())
+        .limit(1)
+    )
+    rate = result.scalar_one_or_none()
+    if rate is None:
+        return {"rate": 1}
+    return {"rate": rate}
